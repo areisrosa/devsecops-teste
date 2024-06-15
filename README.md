@@ -1,65 +1,163 @@
-# DevSecOps - Teste
-DevOps não envolve apenas as equipes de desenvolvimento e de operações, é preciso pensar na integração da segurança no desenvolvimento do inicio ao fim.
+## :car: Junto Seguro (DevSecOps) :shield:
 
-Aqui está o que gostaríamos de ver:
+> **Motivação** :thought_balloon: <br>
+> <em>DevOps</em> não envolve apenas as equipes de desenvolvimento e de
+> operações, é preciso pensar na integração da segurança no desenvolvimento do
+> inicio ao fim.
 
-1 - Segurança da informação no processo de integração contínua CI/CD;
+## :bookmark_tabs: Introdução
 
-2 - Varreduras SAST/DAST, validação de dependência, scan de vulnerabilidade e chaves de acesso expostas;
+1. Segurança da informação no processo de integração contínua CI/CD;
 
-3 - Docker/Container;
+2. Varreduras SAST/DAST, validação de dependência, scan de vulnerabilidade e
+chaves de acesso expostas;
 
-4 - Cloud AWS;
+3. Docker/Container;
 
-5 - Git (Github/Gitlab).
+4. Cloud AWS;
 
-### Para o desafio você é livre para utilizar as ferramentas que fique confortável para você.
+5. Git (Github/Gitlab).
 
-Seu desafio é criar um pipeline para implementação da aplicação com processos de segurança de forma automatizada, disponibilizar acesso via web e implementar itens de segurança na infraestrutura.
+### Tecnologias e ferramentas usadas no projeto:
 
-* Recomendamos a criação de uma conta de nível gratuito(free tier) para não incorrer em custos.
+* Linguagens: [nodejs](https://nodejs.org/en/);
+* Controle de Versão: [git](https://git-scm.com/);
+* Container: [docker](https://www.docker.com/);
+* Repositorio: [github](github.com);
+* CI/CD: [github action](github.com);
+* Segurança: [snyk](https://snyk.io/), [trivy](trivy.dev), [burp](https://portswigger.net/burp);
+* InfCode: [terraform](https://www.terraform.io/);
+* Cloud: [aws](https://aws.amazon.com/pt/).
 
-## Desafio:
+## :computer: Desenvolvimento :tea:
 
-Estamos testando sua capacidade de implementar infraestrutura automatizada moderna com segurança, bem como conhecimentos gerais sobre administração de sistemas. Na sua solução, você deve enfatizar a legibilidade, a manutenção e as metodologias de DevSecOps.
+Este é um projeto que não precisa instalar bibliotecas de Ruby localmente ao
+invés disso é possível rodar tudo nos conteiners, então faça as instalações do
+`docker` e `docker-compose`, além disso, é uma boa prática não instalar
+dependências do projeto em seu próprio sistema operacional. A aplicação contem
+os seguintes containers descritas no `docker-compose.yml`:
 
-1 - Criar um Dockerfile para rodar uma aplicação a sua escolha. Recomendamos o NodeJS do diretório ./app1.
+* `app1` a <em>app1</em> no qual será realizado o deploy.
+* `app2` o <em>app2</em> de teste de SAST/DAST.
+* `app3` o <em>app3</em> upload do site index.html para o s3,
+disponibilizar o acesso via cloud front e adicionar http security headers com
+lambda@edge.
 
-2 - Criar um Pipeline com os passos abaixo(Checkout/Test/AppSec/Deploy). Recomendamos CircleCI.
+### Pré-requisitos:
+ 
+ - Ter o [Docker](https://www.docker.com/) instalado;
+ - Ter um editor ou uma IDE de sua preferência configurado, nós sugerimos as
+   seguintes ferramentas:
 
-2.1 - Checkout -> Checkout do Código
+   * [ Lvim ](https://www.lunarvim.org/)
+   * [ VSCode ](https://code.visualstudio.com/)
 
-2.2 - Test -> Teste com output "Fake test" ou o teste da sua aplicação.
+### Instalação de docker e docker-compose:
 
-2.3.1 - AppSec -> scan-app -> Teste a segurança da aplicação ./app2. Recomendamos uma ou mais ferramentas SAST.
+* Se você não tem o `docker` instalado, [pode seguir este
+ tutorial](https://docs.docker.com/get-docker/);
 
-2.3.2 - AppSec -> scan-docker -> Teste a segurança do Dockerfile/Imagem(docker image security scanning) criado para o ../app1.
+* Se você não tem o `docker-compose` instalado, [pode seguir este
+tutorial](https://docs.docker.com/compose/install/).
 
-2.4 - Deploy -> Criar um script para implementar de forma automatizada a aplicação. Deploy deve ser feito via pipeline no local de sua escolha. Recomendamos AWS (EC2, ECS, Fargate, Beanstalk, etc).
+### Segurança
 
-3 - Verificar headers HTTP de segurança ausentes na aplicação app1. Recomendamos Burp Suite.
+Uma das grandes vantagens do uso do `docker` é a criação de imagens a partir de
+uma já existente, portanto, é preciso ter cautela na utilização delas
+porque muitas destas imagens podem estar mal configuradas, ou pior, podem conter
+<em>malwares</em>, para mitigar essa possibilidade é indispensável o uso de
+imagens autênticas disponibilizadas diretamente do [Docker
+Hub](https://hub.docker.com/).
 
-4 - Corrigir headers HTTP de segurança ausentes na aplicação app1.
+Para garantir isso, o uso do recurso [Docker Content
+Trust](https://docs.docker.com/engine/security/trust/), ele é responsável por
+validar as imagens, reconhecendo a sua autenticidade, portanto, é crucial que
+ele seja habilitado, para isso, você precisa exportá-la para o seu profile no seu terminal
+(.bashrc, .zshrc, entre outros), ou seja, via `export` no seu shell favorito:
 
-5 - Disponibilizar uma URL/IP com o retorno da aplicação app1 "Hello World! {hostname}!".
+```shell
+export DOCKER_CONTENT_TRUST=1
+```
 
-## Envie sua solução
-Crie um repositório público(recomendamos o Github). Preferimos ver um histórico de tentativa e erro do que um único push. Quando terminar, envie-nos a URL do repositório do git, URL/IP da aplicação e relatório de segurança com as evidências.
+> :notebook_with_decorative_cover: **NOTE**: Se imagem não for assinada você
+> receberá a mensagem <em>(...) remote trust data not exist (...)</em>.
 
-## Bônus
-1 - Fazer upload do site ./app3/index.html para o s3, disponibilizar o acesso via CloudFront e adicionar HTTP Security Headers com Lambda@Edge.
+### Variáveis de ambiente
+O sistema está preparado para carregar um `.env` ou ter as variáveis previamente
+exportadas para o ambiente em que está sendo executado.
 
-2 - Criar infraestrutura do projeto com Terraform.
+```shell
+$ cp .env.development .env # (Desenvolvimento)
+```
 
-### /app1 é uma aplicação NodeJS.
+```shell
+$ cp .env.test .env # (Teste)
+```
 
-- `npm test` Roda o Fake test da aplicação
-- `npm start` Inicia a aplicação na porta 3000
+### Construindo os containers
 
-### /app2 é um componente para react-native.
+```shell
+$ docker-compose build
+```
 
-- `npm install` Instala pacotes npm
+> :warning: **WARNING**: Se você estiver executando o docker no GNU/Linux, os
+> arquivos recém-criados pertencem ao root, portanto, altere a propriedade dos
+> novos arquivos com o seguinte comando `sudo chown -R $USER:$USER .`
 
-### /app3 é um index.html.
+### Subindo os containers em <em>background</em>
 
-- index.html simples
+Após o termino das instalações acima, então você terá os containers instalado,
+agora basta rodar o seguinte comando:
+
+```shell
+$ docker-compose up --build
+```
+
+Se for a primeira vez que você executa esse comando, os serviços listados no
+`docker-compose.yml` levaram um tempo para serem construídos, porém nas
+próximas vezes que você executar o mesmo comando ele irá subir na hora os
+containers.
+
+Pode ir tomar um café ou alguma bebida de sua preferência pois isso vai levar
+um tempo para terminar.
+
+> :warning: **WARNING**: Terminando a execução deste commando, ambiente de
+> desenvolvimento estará pronto.
+
+### Acesso aos <em>logs</em>
+
+Para visualizar as últimas linhas do <em>log</em> do container `junto`:
+
+```shell
+$ docker-compose logs -f --tail=100 junto
+```
+
+### Parar os <em>containers</em> e remover <em>containers</em>, <em>networks</em>, <em>volumes</em> e <em>imagens</em>
+
+```shell
+$ docker-compose down
+```
+
+### Testes
+
+Caso queira executar os testes na aplicação, basta referenciar o <em>path</em>
+do <em>jest(tion)</em> desejado:
+
+```shell
+$ npx jest
+```
+
+### Atualizações e Instalações das dependências:
+
+- Executando fora do container:
+
+```shell
+$ docker-compose exec junto-app1 npm update
+```
+
+```shell
+$ docker-compose exec junto-app1 npm install
+```
+
+> :notebook_with_decorative_cover: **NOTE**: Para desenvolvimento local usando o
+> `docker` e `docker-compose` isso é tudo. :slightly_smiling_face: :tada:

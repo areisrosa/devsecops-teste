@@ -1,15 +1,35 @@
 {
-  "name": "example-repo",
+  "name": "app1",
   "version": "1.0.0",
   "description": "Example repo for DevOps test",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "node index.test.js"
+    "build": "babel src/index.js -d dist",
+    "start": "npm run build && node dist/index.js",
+    "lint": "eslint .",
+    "test": "jest"
   },
   "author": "Sam Clement",
   "license": "ISC",
   "devDependencies": {
+    "@babel/cli": "^7.24.7",
+    "@babel/core": "^7.24.7",
+    "@babel/preset-env": "^7.24.7",
+    "@eslint/js": "^9.5.0",
+    "babel-jest": "^29.7.0",
+    "eslint": "^8.0.1",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.2.0",
+    "globals": "^15.4.0",
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0",
     "tape": "^4.6.3"
-  }
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  },
+  "Transform": "AWS::Serverless-2016-10-31"
 }
