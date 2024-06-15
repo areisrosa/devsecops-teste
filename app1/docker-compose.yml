@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  junto:
+    build: .
+    image: junto-app1
+    ports:
+      - 3001:3001
+    volumes:
+      - .:/workspace
+    env_file:
+      - .env
