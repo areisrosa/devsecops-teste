@@ -1,22 +1,16 @@
-var os = require('os')
-var http = require('http')
+import express from "express";
+import { hostname } from "os";
+import dotenv from "dotenv";
 
-function handleRequest(req, res) {
-  res.write('Hello World! ' + os.hostname())
-  res.end()
-}
+dotenv.config();
 
-const PROFILES_LIST = [
-  {
-    name: 'default',
-    aws_access_key_id: 'DFKJBGEURIEJILWJDILJD',
-    aws_secret_access_key: 'S89jBVY678ujhbat678UHU7y8uHGU78UJHIU678uUAVY6U7IyjjGu',
-  },
-  {
-    name: 'sec',
-    aws_access_key_id: 'SDFLKGJEWKUQI3JREIJDD',
-    aws_secret_access_key: '78UJHIU678uUAVY6U7IyjjGuS89jBVY678ujhbat678UHU7y8uHGU',
-  },
-];
+const app = express();
 
-http.createServer(handleRequest).listen(3000)
+app.get("/", (_, res) => {
+  res.send("Hello World, " + hostname());
+});
+
+const server = app.listen(process.env.PORT, () => {});
+
+export default server;
+
