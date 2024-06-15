@@ -1,6 +1,6 @@
 name: GitHub Actions CI
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push, pull_request]
+on: [pull_request]
 permissions:
   contents: read
 jobs:
@@ -28,3 +28,61 @@ jobs:
           cd ${{ github.workspace }}/app1
           npm install
           npx jest --forceExit
+  snyk:
+    permissions:
+      contents: read
+    issues: write
+    security-events: write
+    actions: write
+  name: Scan vulnerabilities in app
+  needs: checkout_code
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@master
+    - name: Set up snyk cli to check for security issues
+      uses: snyk/actions/setup@master
+    - name: Run snyk auth
+      run: snyk auth ${{ secrets.SNYK_TOKEN }}
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '22.x'
+        registry-url: 'https://registry.npmjs.org'
+    - name: Run snyk code test
+      run: snyk code test --severity-threshold=high
+    - name: Run snyk open source monitor
+      run: snyk monitor --all-projects ${{ github.workspace }}/app2
+    - name: Build a docker image
+      run: |
+        cd ${{ github.workspace }}/app1
+        docker build -t junto-app1 .
+    - name: Run snyk to check docker image for vulnerabilities
+      continue-on-error: true
+      uses: snyk/actions/docker@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        image: junto-app1
+        args: --file=Dockerfile
+    - name: Snyk container monitor
+      run: |
+        cd ${GITHUB_WORKSPACE}/app1
+        snyk container monitor junto-app1 --file=Dockerfile
+  trivy:
+    name: Scan vulnerabilities in docker
+  needs: checkout_code
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@master
+    - name: Build an image from dockerfile
+      run: |
+        cd ${{ github.workspace }}/app1
+        docker build -t junto-app1 .
+    - name: Run trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@0.20.0
+      with:
+        image-ref: junto-app1
+        format: 'table'
+        exit-code: '1'
+        ignore-unfixed: true
+        vuln-type: 'os,library'
+        severity: 'CRITICAL'
