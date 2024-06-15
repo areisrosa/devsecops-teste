@@ -18,23 +18,16 @@ chaves de acesso expostas;
 
 5. Git (Github/Gitlab).
 
-#### APIs
-> :mag_right: `/api-docs` API Rswag cria ferramentas
-> [Swagger](https://swagger.io/) para APIs Rails, gera a descrição de
-> todos os <em>endpoints</em> da documentação de API, incluindo uma IU para
-> explorar e testar operações, diretamente de seus testes de integração.
-
 ### Tecnologias e ferramentas usadas no projeto:
 
-- Linguagem: [ECMAScript ](https://ecma-international.org/publications-and-standards/standards/ecma-262/)
-- Git: [Git](https://git-scm.com/)
-- Docker: [Docker](https://www.docker.com/)
-- Docker Compose: [Docker Compose](https://docs.docker.com/compose/)
-- Github Action: [Github](github.com)
-- Snyk: [Snyk](https://snyk.io/)
-- Trivy: [Trivy](trivy.dev)
-- AWS: [AWS](https://aws.amazon.com/pt/)
-- Terraform: [Terraform](https://www.terraform.io/)
+* Linguagens: [nodejs](https://nodejs.org/en/);
+* Controle de Versão: [git](https://git-scm.com/);
+* Container: [docker](https://www.docker.com/);
+* Repositorio: [github](github.com);
+* CI/CD: [github action](github.com);
+* Segurança: [snyk](https://snyk.io/), [trivy](trivy.dev), [burp](https://portswigger.net/burp);
+* InfCode: [terraform](https://www.terraform.io/);
+* Cloud: [aws](https://aws.amazon.com/pt/).
 
 ## :computer: Desenvolvimento :tea:
 
@@ -56,7 +49,7 @@ lambda@edge.
  - Ter um editor ou uma IDE de sua preferência configurado, nós sugerimos as
    seguintes ferramentas:
 
-   * [ Lvim ](lvim.org)
+   * [ Lvim ](https://www.lunarvim.org/)
    * [ VSCode ](https://code.visualstudio.com/)
 
 ### Instalação de docker e docker-compose:
