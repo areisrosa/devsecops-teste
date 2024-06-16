@@ -1,0 +1,33 @@
+name: GitHub Actions CD to EC2
+
+on:
+  workflow_run:
+    workflows: ["GitHub Actions CI"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    name: Run deployment script on EC2 instance 🚀
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Copy files to EC2
+        run: |
+          scp -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} -r . ubuntu@${{ secrets.EC2_INSTANCE_IP }}:/home/ubuntu/app1
+      - name: Build and run Docker image on EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ubuntu@${{ secrets.EC2_INSTANCE_IP }} <<EOF
+          cd /home/ubuntu/app1
+          docker build -t app1 .
+          docker run -d -p 3000:3000 app1
+          EOF´´´
