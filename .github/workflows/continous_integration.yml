@@ -1,6 +1,6 @@
 name: GitHub Actions CI
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [pull_request]
+on: [push, pull_request]
 permissions:
   contents: read
 jobs:
