@@ -1,11 +1,9 @@
 name: GitHub Actions CD to EC2
-
 on:
   workflow_run:
     workflows: ["GitHub Actions CI"]
     types:
       - completed
-
 jobs:
   deploy:
     name: Run deployment script on EC2 instance 🚀
