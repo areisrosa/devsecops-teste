@@ -64,12 +64,9 @@ jobs:
         image: junto-app1
         args: --file=Dockerfile
      - name: Snyk container monitor
-       uses: snyk/actions/docker@master
-       env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-       with:
-        image: junto-app1
-        args: --file=Dockerfile
+       run : |
+          cd ${{ github.workspace }}/app1
+          snky container monitor junto-app1 --file=Dockerfile
   trivy:
    name: Scan vulnerabilities in docker
    needs: checkout_code
