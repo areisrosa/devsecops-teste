@@ -1,9 +1,6 @@
 name: GitHub Actions CI
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on:
-  push:
-    branches:
-      - junto-challenge
+on: [push, pull_request]
 permissions:
   contents: read
 env:
