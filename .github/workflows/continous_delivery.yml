@@ -9,11 +9,6 @@ on:
       - main
 env:
   CI: false
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_REGION: ${{ secrets.AWS_REGION }}
-  EC2_INSTANCE_IP: ${{ secrets.EC2_INSTANCE_IP }}
-  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 jobs:
   deploy:
     name: Run deployment script on EC2 instance 🚀
@@ -32,10 +27,17 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
       - name: Copy files to EC2
         run: |
-          ls -la ${{ github.workspace }}
-          cd ${{ github.workflow }}/app1
-          scp -o StrictHostKeyChecking=no -i  -r . ubuntu@${{ secrets.EC2_INSTANCE_IP }}:/home/ubuntu/app1
+          cd ${{ github.workspace }}/app1
+          scp -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }}.pem -r . ubuntu@${{ secrets.EC2_INSTANCE_IP }}.${{ secrets.AWS_REGION }}.compute.amazonaws.com:/home/ubuntu/app1
       - name: Build and run Docker image on EC2
         run: |
+          sudo apt-get update
+          sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+          sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+          sudo apt-get update
+          sudo apt-cache policy docker-c
+          sudo apt-get install -y docker-ce
+          sudo systemctl status docker
           docker build -t app1 .
           docker run -d -p 3000:3000 app1
