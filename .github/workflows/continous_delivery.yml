@@ -9,13 +9,18 @@ on:
       - main
 env:
   CI: false
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  EC2_INSTANCE_IP: ${{ secrets.EC2_INSTANCE_IP }}
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 jobs:
   deploy:
     name: Run deployment script on EC2 instance 🚀
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -27,11 +32,10 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
       - name: Copy files to EC2
         run: |
-          scp -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} -r . ubuntu@${{ secrets.EC2_INSTANCE_IP }}:/home/ubuntu/app1
+          ls -la ${{ github.workspace }}
+          cd ${{ github.workflow }}/app1
+          scp -o StrictHostKeyChecking=no -i  -r . ubuntu@${{ secrets.EC2_INSTANCE_IP }}:/home/ubuntu/app1
       - name: Build and run Docker image on EC2
         run: |
-          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ubuntu@${{ secrets.EC2_INSTANCE_IP }} <<EOF
-          cd /home/ubuntu/app1
           docker build -t app1 .
           docker run -d -p 3000:3000 app1
-          EOF´´´
