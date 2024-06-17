@@ -26,9 +26,12 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
       - name: Copy files to EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           cd ${{ github.workspace }}/app1
-          scp -i ${{ secrets.SSH_PRIVATE_KEY }} -r . ubuntu@${{ secrets.EC2_INSTANCE_IP }}.${{ secrets.AWS_REGION }}.compute.amazonaws.com:/home/ubuntu/app1
+          echo "$PRIVATE_KEY" > private_key.pem && chmod 600 private_key.pem
+          scp -o StrictHostKeyChecking=no -i private_key.pem -r . ubuntu@${{ secrets.EC2_INSTANCE_IP }}.${{ secrets.AWS_REGION }}.compute.amazonaws.com:/home/ubuntu/app1
       - name: Build and run Docker image on EC2
         run: |
           sudo apt-get update
