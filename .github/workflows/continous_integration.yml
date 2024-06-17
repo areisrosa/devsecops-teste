@@ -1,20 +1,13 @@
 name: GitHub Actions CI
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on:
+on: 
   push:
     branches:
-      - junto-chanllenge
-  pull_request:
-    branches:
-      - junto-chanllenge
-env:
-  CI: true
-  NODE_ENV: test
-  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  GITHUB_WORKSPACE: ${{ github.workspace }}
+      - junto-challenge
 permissions:
   contents: read
+env:
+  CI: true
 jobs:
   checkout_code:
     name: Check code
@@ -37,7 +30,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Install modules and run tests in app1
         run: |
-          cd GITHUB_WORKSPACE/app1
+          cd ${{ github.workspace }}/app1
           npm install
           npx jest --forceExit
   snyk:
@@ -54,7 +47,7 @@ jobs:
      - name: Set up snyk cli to check for security issues
        uses: snyk/actions/setup@master
      - name: Run snyk auth
-       run: snyk auth SNYK_TOKEN
+       run: snyk auth ${{ secrets.SNYK_TOKEN }}
      - uses: actions/setup-node@v3
        with:
          node-version: '22.x'
@@ -62,16 +55,16 @@ jobs:
      - name: Run snyk code test
        run: snyk code test --severity-threshold=high
      - name: Run snyk open source monitor
-       run: snyk monitor --all-projects /app2
+       run: snyk monitor --all-projects ${{ github.workspace }}/app2
      - name: Build a docker image
        run: |
-          cd GITHUB_WORKSPACE /app1
+          cd ${{ github.workspace }}/app1
           docker build -t junto-app1 .
      - name: Run snyk to check docker image for vulnerabilities
        continue-on-error: true
        uses: snyk/actions/docker@master
        env:
-        SNYK_TOKEN: SNYK_TOKEN
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
        with:
         image: junto-app1
         args: --file=Dockerfile
@@ -83,7 +76,7 @@ jobs:
      - uses: actions/checkout@master
      - name: Build an image from dockerfile
        run: |
-          cd GITHUB_WORKSPACE/app1
+          cd ${{ github.workspace }}/app1
           docker build -t junto-app1 .
      - name: Run trivy vulnerability scanner
        uses: aquasecurity/trivy-action@0.20.0
