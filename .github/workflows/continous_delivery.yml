@@ -4,10 +4,16 @@ on:
     workflows: ["GitHub Actions CI"]
     types:
       - completed
+  push:
+    branches:
+      - main
+env:
+  CI: false
 jobs:
   deploy:
     name: Run deployment script on EC2 instance 🚀
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@master
       - name: Configure AWS credentials
