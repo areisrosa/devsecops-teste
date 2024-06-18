@@ -38,11 +38,6 @@ jobs:
           npm install
           npx jest --forceExit
   snyk:
-   permissions:
-    contents: read
-    issues: write
-    security-events: write
-    actions: write
    name: Scan vulnerabilities in app
    needs: check_code
    runs-on: ubuntu-latest
