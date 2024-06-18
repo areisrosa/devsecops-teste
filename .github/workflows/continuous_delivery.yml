@@ -1,10 +1,10 @@
 name: Continuous Delivery Workflow
 on:
+  workflow_call:
   workflow_run:
     workflows: ["Continuous Integration Workflow"]
     types:
       - completed
-  workflow_call:
   push:
     branches:
       - junto-challenge
