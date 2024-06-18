@@ -13,7 +13,7 @@ permissions:
 env:
   CI: true
 jobs:
-  check_code:
+  continuous_integration:
     name: Check code
     runs-on: ubuntu-latest
     steps:
@@ -24,7 +24,7 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
   unit_test:
     name: Run unit tests
-    needs: check_code
+    needs: continuous_integration
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -39,13 +39,15 @@ jobs:
           npx jest --forceExit
   snyk:
    name: Scan vulnerabilities in app
-   needs: check_code
+   needs: continuous_integration
    runs-on: ubuntu-latest
    steps:
      - uses: actions/checkout@master
      - name: Set up snyk cli to check for security issues
        uses: snyk/actions/setup@master
      - name: Run snyk auth
+       env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
        run: snyk auth ${{ secrets.SNYK_TOKEN }}
      - uses: actions/setup-node@v3
        with:
@@ -69,7 +71,7 @@ jobs:
         args: --file=Dockerfile
   trivy:
    name: Scan vulnerabilities in docker
-   needs: check_code
+   needs: continuous_integration
    runs-on: ubuntu-latest
    steps:
      - uses: actions/checkout@master
