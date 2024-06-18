@@ -6,10 +6,11 @@ on:
       - completed
   push:
     branches:
+      - testing
       - main
 jobs:
   continuous_delivery:
-    uses: ./.github/workflows/continous_delivery.yml
+    uses: ./.github/workflows/continuous_delivery.yml
   testing:
     needs: continuous_delivery
     name: Run deployment script on EC2 instance 🚀
