@@ -1,4 +1,7 @@
 on:
+  push:
+    branches:
+      - junto-challenge
   workflow_call:
 permissions: 
   contents: read

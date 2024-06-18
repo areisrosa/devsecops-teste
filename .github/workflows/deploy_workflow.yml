@@ -4,12 +4,9 @@ on:
     workflows: ["Continuous Delivery Workflow"]
     types:
       - completed
-  pull_request:
+  push:
     branches:
       - main
-  push: 
-    branches:
-      - junto-challenge
 jobs:
   continuous_delivery:
     uses: ./.github/workflows/continous_delivery.yml
