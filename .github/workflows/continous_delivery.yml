@@ -1,8 +1,11 @@
 on:
+  workflow_call:
   push:
     branches:
       - junto-challenge
-  workflow_call:
+  pull_request:
+    branches:
+      - main
 permissions: 
   contents: read
 env:
