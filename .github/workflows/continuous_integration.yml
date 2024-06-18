@@ -43,12 +43,6 @@ jobs:
    runs-on: ubuntu-latest
    steps:
      - uses: actions/checkout@master
-     - name: Set up snyk cli to check for security issues
-       uses: snyk/actions/setup@master
-     - name: Run snyk auth
-       env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-       run: snyk auth ${{ secrets.SNYK_TOKEN }}
      - uses: actions/setup-node@v3
        with:
          node-version: '22.x'
