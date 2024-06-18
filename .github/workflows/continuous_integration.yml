@@ -12,6 +12,7 @@ permissions:
   contents: read
 env:
   CI: true
+  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 jobs:
   continuous_integration:
     name: Check code
@@ -47,8 +48,9 @@ jobs:
        with:
          node-version: '22.x'
          registry-url: 'https://registry.npmjs.org'
+     - uses: snyk/actions/setup@master
      - name: Run snyk code test
-       run: snyk code test --severity-threshold=high ${{ github.workspace }}/app2
+       run: snyk test --severity-threshold=high ${{ github.workspace }}/app2
      - name: Run snyk open source monitor
        run: snyk monitor --all-projects ${{ github.workspace }}/app2
      - name: Build a docker image
@@ -58,8 +60,6 @@ jobs:
      - name: Run snyk to check docker image for vulnerabilities
        continue-on-error: true
        uses: snyk/actions/docker@master
-       env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
        with:
         image: junto-app1
         args: --file=Dockerfile
