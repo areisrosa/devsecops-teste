@@ -1,0 +1,54 @@
+name: Continuous Delivery Workflow
+on:
+  workflow_run:
+    workflows: ["Continuous Integration Workflow"]
+    types:
+      - completed
+  workflow_call:
+  push:
+    branches:
+      - junto-challenge
+  pull_request:
+    branches:
+      - main
+permissions: 
+  contents: read
+env:
+  CD: true
+jobs:
+  continuous_integration:
+    uses: ./.github/workflows/continuous_integration.yml@main
+  build:
+    needs: continuous_integration
+    name: Testing build 🚀
+    runs-on: ubuntu-latest
+    environment: testing
+    steps:
+      - uses: actions/checkout@v4
+      - name: Copy files to EC2
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install modules and run tests in app1
+        run: |
+          cd ${{ github.workspace }}/app1
+          npm install
+      - name: Copy files to EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          cd ${{ github.workspace }}/app1
+          echo "$PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+          scp -o StrictHostKeyChecking=no -i private_key.pem -r . ubuntu@${{ secrets.EC2_INSTANCE_IP }}.${{ secrets.AWS_REGION }}.compute.amazonaws.com:/home/ubuntu/app1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Build docker image
+        run: |
+          cd ${{ github.workspace }}/app1
+          docker build -t junto-app1 .
