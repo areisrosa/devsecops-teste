@@ -13,7 +13,7 @@ permissions:
 env:
   CI: true
 jobs:
-  continuous_integration:
+  check_code:
     name: Check code
     runs-on: ubuntu-latest
     steps:
@@ -24,7 +24,7 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
   unit_test:
     name: Run unit tests
-    needs: continuous_integration
+    needs: check_code
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -44,7 +44,7 @@ jobs:
     security-events: write
     actions: write
    name: Scan vulnerabilities in app
-   needs: continuous_integration
+   needs: check_code
    runs-on: ubuntu-latest
    steps:
      - uses: actions/checkout@master
@@ -74,7 +74,7 @@ jobs:
         args: --file=Dockerfile
   trivy:
    name: Scan vulnerabilities in docker
-   needs: continuous_integration
+   needs: check_code
    runs-on: ubuntu-latest
    steps:
      - uses: actions/checkout@master
