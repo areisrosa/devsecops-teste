@@ -49,6 +49,8 @@ jobs:
          node-version: '22.x'
          registry-url: 'https://registry.npmjs.org'
      - uses: snyk/actions/setup@master
+     - name: Run snyk auth
+       run: snyk auth ${{ secrets.SNYK_TOKEN }}
      - name: Run snyk code test
        run: snyk test --severity-threshold=high ${{ github.workspace }}/app2
      - name: Run snyk open source monitor
