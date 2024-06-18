@@ -48,7 +48,7 @@ jobs:
          node-version: '22.x'
          registry-url: 'https://registry.npmjs.org'
      - name: Run snyk code test
-       run: snyk code test --severity-threshold=high
+       run: snyk code test --severity-threshold=high ${{ github.workspace }}/app2
      - name: Run snyk open source monitor
        run: snyk monitor --all-projects ${{ github.workspace }}/app2
      - name: Build a docker image
