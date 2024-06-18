@@ -1,4 +1,3 @@
-name: Continuous Integration Workflow
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: 
   workflow_call:
@@ -10,7 +9,7 @@ permissions:
 env:
   CI: true
 jobs:
-  checkout_code:
+  continuous_integration:
     name: Check code
     runs-on: ubuntu-latest
     steps:
@@ -21,7 +20,7 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
   unit_test:
     name: Run unit tests
-    needs: checkout_code
+    needs: continuous_integration
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -41,7 +40,7 @@ jobs:
     security-events: write
     actions: write
    name: Scan vulnerabilities in app
-   needs: checkout_code
+   needs: continuous_integration
    runs-on: ubuntu-latest
    steps:
      - uses: actions/checkout@master
@@ -71,7 +70,7 @@ jobs:
         args: --file=Dockerfile
   trivy:
    name: Scan vulnerabilities in docker
-   needs: checkout_code
+   needs: continuous_integration
    runs-on: ubuntu-latest
    steps:
      - uses: actions/checkout@master
