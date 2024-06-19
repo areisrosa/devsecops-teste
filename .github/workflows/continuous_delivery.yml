@@ -5,6 +5,9 @@ on:
     workflows: ["Continuous Integration Workflow"]
     types:
       - completed
+  push: 
+    branches:
+      - testing
 permissions: 
   contents: read
 jobs:
