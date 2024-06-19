@@ -91,7 +91,7 @@ jobs:
           docker run -d -p 80:80 junto-app1
   testing:
     needs: [continuous_integration, unit_test, snyk, trivy, continuous_delivery]
-    name: Run deployment script on EC2 instance 🚀
+    name: Run deployment testing on EC2 🚀
     runs-on: ubuntu-latest
     environment: testing
     steps:
@@ -112,7 +112,7 @@ jobs:
   production:
    needs: [continuous_integration, unit_test, snyk, trivy, continuous_delivery, testing]
    if: github.ref == 'refs/heads/main'
-   name: Run deployment script on EC2 instance 🚀
+   name: Run deployment production on EC2 🚀
    runs-on: ubuntu-latest
    environment: production
    steps:
