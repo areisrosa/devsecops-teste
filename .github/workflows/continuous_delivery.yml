@@ -7,7 +7,7 @@ on:
       - completed
   push: 
     branches:
-      - testing
+      - pull_request
 permissions: 
   contents: read
 jobs:
