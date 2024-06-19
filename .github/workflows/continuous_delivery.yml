@@ -8,11 +8,14 @@ on:
   push: 
     branches:
       - testing
+  pull_request:
+    branches:
+      - main
 permissions: 
   contents: read
 jobs:
   continuous_delivery:
-    name: Testing build 🚀
+    name: Build application in EC2 🚀
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
