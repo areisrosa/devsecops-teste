@@ -91,10 +91,11 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Install modules and build app1
         run: |
-          cd ${{ github.workflow }}/app1
+          cd app1
           npm install
       - name: Run build application
         run: |
+          cd app1
           docker build -t junto-app1 .
           docker run -d -p 80:80 junto-app1
   testing:
