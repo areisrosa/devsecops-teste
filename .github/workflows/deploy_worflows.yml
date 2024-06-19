@@ -91,9 +91,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Install modules and build app1
         run: |
-          pwd
-          ls -la
-          cd app1
+          cd ${{ github.workflow }}/app1
           npm install
       - name: Run build application
         run: |
