@@ -8,13 +8,9 @@ on:
 permissions: 
   contents: read
 jobs:
-  continuous_integration:
-    uses: ./.github/workflows/continuous_integration.yml
-  build:
-    needs: continuous_integration
+  continuous_delivery:
     name: Testing build 🚀
     runs-on: ubuntu-latest
-    environment: testing
     steps:
       - uses: actions/checkout@v4
       - name: Copy files to EC2

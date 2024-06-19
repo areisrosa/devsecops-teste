@@ -33,7 +33,6 @@ jobs:
    name: Scan vulnerabilities in app
    needs: continuous_integration
    runs-on: ubuntu-latest
-   environment: testing
    steps:
      - uses: actions/checkout@master
      - uses: actions/setup-node@v3
