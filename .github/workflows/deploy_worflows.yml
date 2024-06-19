@@ -116,7 +116,6 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            pwd
             ls -la
             cd devsecops-teste/app1
             sudo docker pull ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
