@@ -9,11 +9,16 @@ on:
     branches:
       - testing
       - main
+  pull_request:
+    branches:
+      - testing
 jobs:
+  continuous_integration:
+    uses: ./.github/workflows/continuous_integration.yml
   continuous_delivery:
     uses: ./.github/workflows/continuous_delivery.yml
   testing:
-    needs: continuous_delivery
+    needs: [continuous_integration, continuous_delivery]
     name: Run deployment script on EC2 instance 🚀
     runs-on: ubuntu-latest
     environment: testing
@@ -33,7 +38,7 @@ jobs:
             --deployment-config-name CodeDeployDefault.OneAtATime \
             --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
   production:
-   needs: [continuous_delivery, testing]
+   needs: [continuous_integration, continuous_delivery, testing]
    if: github.ref == 'refs/heads/main'
    name: Run deployment script on EC2 instance 🚀
    runs-on: ubuntu-latest
