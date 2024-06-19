@@ -92,7 +92,7 @@ jobs:
       - name: Install modules and build app1
         run: |
           ls -la
-          cd $HOME/devsecops-teste/app1
+          cd $HOME/app1
           npm install
       - name: Run build application
         run: |
