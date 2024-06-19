@@ -83,30 +83,12 @@ jobs:
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Install modules and run tests in app1
+      - name: Install modules and build app1
         run: |
           cd ${{ github.workspace }}/app1
           npm install
-      - name: Copy files to EC2
-        env:
-          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          cd ${{ github.workspace }}
-          echo "$PRIVATE_KEY" > private_key.pem
-          chmod 400 private_key.pem
-          ssh -i private.pem ubuntu@${{ secrets.EC2_INSTANCE_IP }}.${{ secrets.AWS_REGION }}.compute.amazonaws.com <<EOF
-          git clone https://github.com/areisrosa/devsecops-teste.git
-          EOF```
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-      - name: Build docker image
-        run: |
-          cd ${{ github.workspace }}/app1
           docker build -t junto-app1 .
+          docker run -d -p 80:80 junto-app1
   testing:
     needs: [continuous_integration, unit_test, snyk, trivy, continuous_delivery]
     name: Run deployment script on EC2 instance 🚀
