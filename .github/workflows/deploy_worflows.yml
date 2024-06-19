@@ -96,8 +96,7 @@ jobs:
       - name: Run build application
         run: |
           cd app1
-          docker build -t junto-app1 .
-          docker run -d -p 80:80 junto-app1
+          docker-compose up --build
   testing:
     needs: [continuous_integration, unit_test, snyk, trivy, continuous_delivery]
     name: Run deployment testing on EC2 🚀
