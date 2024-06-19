@@ -13,8 +13,6 @@ on:
       - main
 permissions: 
   contents: read
-env:
-  CD: true
 jobs:
   continuous_integration:
     uses: ./.github/workflows/continuous_integration.yml
