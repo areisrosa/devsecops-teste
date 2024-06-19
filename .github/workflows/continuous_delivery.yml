@@ -13,6 +13,8 @@ on:
       - main
 permissions: 
   contents: read
+env:
+  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 jobs:
   continuous_delivery:
     name: Build application in EC2 🚀

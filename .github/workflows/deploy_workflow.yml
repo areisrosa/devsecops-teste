@@ -1,13 +1,12 @@
 name: Deployment Workflow
 on:
   workflow_run:
-    workflows: [Continuous Integration Workflow, "Continuous Delivery Workflow"]
+    workflows: [Continuous Integration Workflow, Continuous Delivery Workflow]
     types:
       - completed
   workflow_call:
   push:
     branches:
-      - testing
       - main
 jobs:
   continuous_integration:
