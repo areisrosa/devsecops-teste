@@ -1,9 +1,6 @@
-name: Continuous Integration Workflow
+name: Deploy Workflows
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: 
-  push:
-    branches:
-      - main
+on: [push]
 jobs:
   continuous_integration:
     name: Check code
