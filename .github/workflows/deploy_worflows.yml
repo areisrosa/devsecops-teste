@@ -96,10 +96,9 @@ jobs:
       - name: Run docker-compose
         uses: hoverkraft-tech/compose-action@v2.0.1
         with:
-          compose-file: "./docker-compose.yml"
+          compose-file: "${{ github.workflow }}/app1/docker-compose.yml"
       - name: Run application build
         run: |
-          cd app1
           docker-compose up --build
   testing:
     needs: [continuous_integration, unit_test, snyk, trivy, continuous_delivery]
