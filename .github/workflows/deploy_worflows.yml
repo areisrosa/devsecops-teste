@@ -89,11 +89,13 @@ jobs:
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
-      - uses: actions/checkout@v4
-      - name: Run docker-compose
-        uses: hoverkraft-tech/compose-action@v2.0.1
-        with:
-          compose-file: "./app1/docker-compose.yml"
+      - name: Build the app and push docker image
+        run: |
+            cd ${{ github.workspace }}/app1
+            docker build -t devsec .
+            docker tag devsec:latest ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
+            docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
+            docker push ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
   testing:
     needs: [continuous_integration, unit_test, snyk, trivy, continuous_delivery]
     name: Run deployment testing on EC2 🚀
@@ -107,13 +109,18 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-      - name: Deploy to testing
-        run: |
-            aws deploy create-deployment \
-            --application-name junto-app \
-            --deployment-group-name AppDeploymentGroupName \
-            --deployment-config-name CodeDeployDefault.OneAtATime \
-            --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
+      - name: Build the app and push docker image
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ github.workspace }}/app1
+            sudo docker pull ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
+            sudo docker stop junto-app1 || true
+            sudo docker rm junto-app1 || true
+            sudo docker run -d -p 3000:3000 --name junto-app1 ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
   production:
    needs: [continuous_integration, unit_test, snyk, trivy, continuous_delivery, testing]
    if: github.ref == 'refs/heads/main'
