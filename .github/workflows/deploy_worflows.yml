@@ -95,6 +95,8 @@ jobs:
           npm install
       - name: Run docker-compose
         uses: hoverkraft-tech/compose-action@v2.0.1
+        with:
+          compose-file: "/home/runner/work/devsecops-teste/devsecops-teste/app1/docker-compose.yml"
       - name: Run application build
         run: |
           cd app1
