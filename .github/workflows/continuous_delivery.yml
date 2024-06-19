@@ -5,12 +5,6 @@ on:
     workflows: ["Continuous Integration Workflow"]
     types:
       - completed
-  push:
-    branches:
-      - junto-challenge
-  pull_request:
-    branches:
-      - main
 permissions: 
   contents: read
 jobs:
