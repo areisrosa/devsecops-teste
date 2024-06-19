@@ -90,11 +90,10 @@ jobs:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
       - uses: actions/checkout@v4
-      - name: Build aplication
+      - name: Run docker-compose
         uses: hoverkraft-tech/compose-action@v2.0.1
         with:
-          compose-file: "./appi/docker-compose.yml"
-          up-flags: "-d"
+          compose-file: "./app1/docker-compose.yml"
   testing:
     needs: [continuous_integration, unit_test, snyk, trivy, continuous_delivery]
     name: Run deployment testing on EC2 🚀
