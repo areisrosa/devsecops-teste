@@ -5,16 +5,6 @@ on:
     workflows: ["Continuous Integration Workflow"]
     types:
       - completed
-  push: 
-    branches:
-      - testing
-  pull_request:
-    branches:
-      - main
-permissions: 
-  contents: read
-env:
-  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 jobs:
   continuous_delivery:
     name: Build application in EC2 🚀
@@ -34,10 +24,10 @@ jobs:
         env:
           PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          cd ${{ github.workspace }}/app1
+          cd ${{ github.workspace }}
           echo "$PRIVATE_KEY" > private_key.pem
           chmod 600 private_key.pem
-          scp -o StrictHostKeyChecking=no -i private_key.pem -r . ubuntu@${{ secrets.EC2_INSTANCE_IP }}.${{ secrets.AWS_REGION }}.compute.amazonaws.com:/home/ubuntu/app1
+          scp -o StrictHostKeyChecking=no -i private_key.pem -r ./app1 ubuntu@${{ secrets.EC2_INSTANCE_IP }}.${{ secrets.AWS_REGION }}.compute.amazonaws.com:/home/ubuntu/app1
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
