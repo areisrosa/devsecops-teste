@@ -9,9 +9,6 @@ on:
     branches:
       - testing
       - main
-  pull_request:
-    branches:
-      - testing
 jobs:
   continuous_integration:
     uses: ./.github/workflows/continuous_integration.yml
