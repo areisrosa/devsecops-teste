@@ -33,8 +33,8 @@ jobs:
           npm install
           npx jest --forceExit
   snyk:
-   name: Scan vulnerabilities in app
    needs: continuous_integration
+   name: Scan vulnerabilities in app
    runs-on: ubuntu-latest
    steps:
      - uses: actions/checkout@master
@@ -79,7 +79,7 @@ jobs:
          vuln-type: 'os,library'
          severity: 'CRITICAL'
   continuous_delivery:
-    needs: continuous_integration
+    needs: [continuous_integration, unit_test, snyk, trivy]
     name: Build application in EC2 🚀
     runs-on: ubuntu-latest
     steps:
@@ -100,7 +100,7 @@ jobs:
           cd ${{ github.workspace }}
           echo "$PRIVATE_KEY" > private_key.pem
           chmod 600 private_key.pem
-          scp -o StrictHostKeyChecking=no -i private_key.pem -r ./app1 ubuntu@${{ secrets.EC2_INSTANCE_IP }}.${{ secrets.AWS_REGION }}.compute.amazonaws.com:/home/ubuntu/app1
+          scp -o StrictHostKeyChecking=no -i private_key.pem -r ./app1 ubuntu@${{ secrets.EC2_INSTANCE_IP }}.${{ secrets.AWS_REGION }}.compute.amazonaws.com:/home/ubuntu/
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -112,7 +112,7 @@ jobs:
           cd ${{ github.workspace }}/app1
           docker build -t junto-app1 .
   testing:
-    needs: [continuous_integration, continuous_delivery]
+    needs: [continuous_integration, unit_test, snyk, trivy, continuous_delivery]
     name: Run deployment script on EC2 instance 🚀
     runs-on: ubuntu-latest
     environment: testing
@@ -132,7 +132,7 @@ jobs:
             --deployment-config-name CodeDeployDefault.OneAtATime \
             --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
   production:
-   needs: [continuous_integration, continuous_delivery, testing]
+   needs: [continuous_integration, unit_test, snyk, trivy, continuous_delivery, testing]
    if: github.ref == 'refs/heads/main'
    name: Run deployment script on EC2 instance 🚀
    runs-on: ubuntu-latest
