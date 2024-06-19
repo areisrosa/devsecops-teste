@@ -3,9 +3,6 @@ run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: 
   push:
     branches:
-      - testing
-  pull_request:
-    branches:
       - main
 jobs:
   continuous_integration:
