@@ -93,6 +93,7 @@ jobs:
         run: |
             cd ${{ github.workspace }}/app1
             docker build --platform linux/arm64 -t devsec .
+            docker imagens
             docker tag devsec:latest ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
             docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
             docker push ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
