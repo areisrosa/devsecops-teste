@@ -120,14 +120,14 @@ jobs:
             ls -la
             cd devsecops-teste/app1
             sudo docker pull ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
-            sudo docker stop junto-app1 || true
-            sudo docker rm junto-app1 || true
-            sudo docker run -d -p 3000:3000 --name junto-app1
+            sudo docker stop devsec|| true
+            sudo docker rm devsec || true
+            sudo docker run -d -p 3000:3000 --name devsec ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
             ls -la
             pwd
             sudo docker images
-            sudo docker logs junto-app1
-            sudo docker exec junto-app1 ls -la
+            sudo docker logs devsec ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
+            sudo docker exec devsec ls -la
   production:
    needs: [continuous_integration, unit_test, snyk, trivy, continuous_delivery, testing]
    if: github.ref == 'refs/heads/main'
