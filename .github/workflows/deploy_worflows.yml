@@ -121,9 +121,11 @@ jobs:
             cd devsecops-teste/app1
             sudo docker pull ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
             docker images
+            docker ps -a
             sudo docker stop junto-app|| true
             sudo docker rm junto-app || true
             sudo docker run -d -p 3000:3000 --name junto-app ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
+            docker ps -a
             ls -la
             pwd
             sudo docker images
