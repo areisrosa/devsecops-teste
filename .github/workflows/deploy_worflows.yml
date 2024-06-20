@@ -123,6 +123,12 @@ jobs:
             sudo docker stop junto-app1 || true
             sudo docker rm junto-app1 || true
             sudo docker run -d -p 3000:3000 --name junto-app1 ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
+            ld -la
+            pwd
+            sudo docker images
+            sudo docker ps
+            sudo docker logs junto-app1
+            sudo docker exec junto-app1 ls -la
   production:
    needs: [continuous_integration, unit_test, snyk, trivy, continuous_delivery, testing]
    if: github.ref == 'refs/heads/main'
