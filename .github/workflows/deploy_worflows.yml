@@ -93,7 +93,6 @@ jobs:
         run: |
             cd ${{ github.workspace }}/app1
             docker build --platform linux/amd64 -t devsec .
-            docker images
             docker tag devsec:latest ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
             docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
             docker push ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
@@ -117,18 +116,12 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            ls -la
-            cd devsecops-teste/app1
-            sudo docker pull ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
-            docker images
+            cd ${{ github.workspace }}/app1
+            docker pull ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
+            docker stop junto-app || true
+            docker rm junto-app || true
+            docker run -d -p 3000:3000 --name junto-app ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
             docker ps -a
-            sudo docker stop junto-app|| true
-            sudo docker rm junto-app || true
-            sudo docker run -d -p 3000:3000 --name junto-app ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
-            docker ps -a
-            ls -la
-            pwd
-            sudo docker images
   production:
    needs: [continuous_integration, unit_test, snyk, trivy, continuous_delivery, testing]
    if: github.ref == 'refs/heads/main'
