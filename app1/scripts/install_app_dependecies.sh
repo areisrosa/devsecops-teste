@@ -1,3 +1,3 @@
 #!/bin/bash
-cd /home/ubuntu/app1
+cd /home/ubuntu/devsecops-teste/app1
 npm install
