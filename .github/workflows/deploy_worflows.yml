@@ -116,7 +116,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ${{ github.workspace }}/app1
+            cd devsecops-teste/app1
             docker pull ${{ secrets.DOCKER_HUB_REBO_URL }}/devsec:latest
             docker stop junto-app || true
             docker rm junto-app || true
