@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: .
-    destination: ~/devsecops/app1
+    destination: /home/ubuntu/devsecops/app1
 hooks:
   AfterInstall:
     - location: scripts/install_dependencies.sh
