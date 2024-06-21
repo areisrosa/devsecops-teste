@@ -2,17 +2,17 @@ version: 0.0
 os: linux
 files:
   - source: .
-    destination: /home/ubuntu/devsecops/app1
+    destination: /home/ubuntu/devsecops-teste/app1
 hooks:
   AfterInstall:
-    - location: /devsecops/app1/scripts/install_dependencies.sh
+    - location: /devsecops-teste/app1/scripts/install_dependencies.sh
       timeout: 300
       runas: root
   ApplicationStart:
-    - location: /devsecops/app1/scripts/start_server.sh
+    - location: /devsecops-teste/app1/scripts/start_server.sh
       timeout: 300
       runas: root
   ApplicationStop:
-    - location: /devsecops/app1/scripts/stop_server.sh
+    - location: /devsecops-teste/app1/scripts/stop_server.sh
       timeout: 300
       runas: root
