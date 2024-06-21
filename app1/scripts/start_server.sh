@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /home/ubuntu/devsecops-teste /app1
+cd /home/ubuntu/devsecops-teste/app1
 docker pull areisr/devsec:latest
 docker stop junto-app || true
 docker rm junto-app || true
