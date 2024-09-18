@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "dotenv": "^16.4.5",
-    "express": "^4.19.2"
+    "express": "^4.20.0"
   },
   "Transform": "AWS::Serverless-2016-10-31"
 }
