@@ -28,7 +28,7 @@
     "tape": "^4.6.3"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.4.7",
     "express": "^4.19.2"
   },
   "Transform": "AWS::Serverless-2016-10-31"
